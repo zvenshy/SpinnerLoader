@@ -64,14 +64,41 @@
 			R = fixedCircle.radius,
 			distance = r + R,
 			realRaduis = r,
+			num = isIntersect(),
+			x0, y0, sumSquaresSqrt,
+			p1 = {}, p2 = {}, p3 = {}, p4 = {}, p5 = {},
+			alpha, beta, gama,
 			x = box.x + (box.radius - fixedCircle.radius) * Math.sin(angle),
 			y = box.y + (box.radius - fixedCircle.radius) * ( 1 - Math.cos(angle) );
 
 		context.clearRect(moveCircle.beforeX - 2 * r, moveCircle.beforeY - 2 * r, r * 4, r * 4);
 		initFixed(box, fixedCircle.radius);
-		if ( isIntersect() === 404 ) {
-			//还未编辑....
+		if ( num ) {
 			realRaduis = R + (1 - distance / (R + r));
+			x0 = fixedCircle.x[num];
+			y0 = fixedCircle.y[num];
+			sumSquaresSqrt = (Math.sqrt( (x0 - x) ^ 2 + (y0 -y) ^ 2 ));
+			p5.x = (x0 + x)/2;
+			p5.y = (y0 + y)/2;
+			alpha = Math.atan( (x0 - x) / (y0 - y) );
+			beta = Math.acos( (R - r) / sumSquaresSqrt ) - alpha;
+			gama = Math.asin( (R - r) / sumSquaresSqrt );
+			p1 = {
+				x: x - r * Math.sin(beta),
+				y: y + r * Math.cos(beta)
+			};
+			p2 = {
+				x: x0 - R * Math.cos(beta),
+				y: y0 + R * Math.sin(beta)
+			};
+			p3 = {
+				x: x + r * Math.sin(gama - alpha),
+				y: y + r * Math.cos(gama - alpha)
+			};
+			p4 = {
+				x: x0 + R * Math.sin(alpha - gama),
+				y: y0 + R * Math.cos(alpha - gama)
+			};
 
 		} else {
 			context.beginPath();
@@ -94,6 +121,6 @@
 				break;
 			}
 		}
-		return i !== len ? true : false;
+		return i !== len ? i : false;
 	}
 })();
